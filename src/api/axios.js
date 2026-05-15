@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-const AUTH_URL = 'http://localhost:8081';
-const LIBRARY_URL = 'http://localhost:8082';
-const NOTIFICATION_URL = 'http://localhost:8084';
+const KONG_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const createInstance = (baseURL) => {
   const instance = axios.create({ baseURL });
@@ -16,20 +14,20 @@ const createInstance = (baseURL) => {
   });
 
   instance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
       }
-      return Promise.reject(error);
-    }
   );
 
   return instance;
 };
 
-export const authApi = createInstance(AUTH_URL);
-export const libraryApi = createInstance(LIBRARY_URL);
-export const notificationApi = createInstance(NOTIFICATION_URL);
+export const authApi = createInstance(`${KONG_URL}/auth`);
+export const libraryApi = createInstance(`${KONG_URL}/library`);
+export const notificationApi = createInstance(`${KONG_URL}/notification`);
