@@ -86,7 +86,7 @@ export const CatalogPage = () => {
           >
             <option value="">All authors</option>
             {authors.map(a => (
-              <option key={a.id} value={a.id}>{a.name}</option>
+              <option key={a.id} value={a.id}>{`${a.firstName ?? ''} ${a.lastName ?? ''}`.trim()}</option>
             ))}
           </select>
           <label className="flex items-center gap-2 text-sm text-slate-700">
@@ -116,8 +116,12 @@ export const CatalogPage = () => {
               <div key={book.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col gap-3">
                 <div>
                   <h3 className="font-semibold text-slate-800">{book.title}</h3>
-                  <p className="text-sm text-slate-500">{book.authorName}</p>
-                  {book.genre && <p className="text-xs text-slate-400 mt-0.5">{book.genre}</p>}
+                  <p className="text-sm text-slate-500">
+                    {(book.authors && book.authors.length)
+                      ? book.authors.map(a => `${a.firstName ?? ''} ${a.lastName ?? ''}`.trim()).join(', ')
+                      : '—'}
+                  </p>
+                  {book.description && <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">{book.description}</p>}
                 </div>
                 <div className="flex items-center justify-between">
                   <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${

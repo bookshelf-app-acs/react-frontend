@@ -3,7 +3,8 @@ import { getAuthors, createAuthor, deleteAuthor } from '../../api/libraryService
 
 export const AdminAuthors = () => {
   const [authors, setAuthors] = useState([]);
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [message, setMessage] = useState('');
 
   const fetchAuthors = async () => {
@@ -16,8 +17,10 @@ export const AdminAuthors = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await createAuthor({ name });
-      setName('');
+      await createAuthor({ firstName, lastName });
+      setFirstName('');
+      setLastName('');
+      setMessage('');
       fetchAuthors();
     } catch (e) {
       setMessage(e.response?.data?.error_message || 'Failed to add author.');
@@ -34,6 +37,8 @@ export const AdminAuthors = () => {
     }
   };
 
+  const fullName = (a) => `${a.firstName ?? ''} ${a.lastName ?? ''}`.trim() || a.name;
+
   return (
     <div>
       <h3 className="font-semibold text-slate-700 mb-4">Manage Authors</h3>
@@ -41,9 +46,16 @@ export const AdminAuthors = () => {
 
       <form onSubmit={handleCreate} className="flex gap-3 mb-6">
         <input
-          placeholder="Author name"
-          value={name}
-          onChange={e => setName(e.target.value)}
+          placeholder="First name"
+          value={firstName}
+          onChange={e => setFirstName(e.target.value)}
+          required
+          className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm flex-1"
+        />
+        <input
+          placeholder="Last name"
+          value={lastName}
+          onChange={e => setLastName(e.target.value)}
           required
           className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm flex-1"
         />
@@ -55,7 +67,7 @@ export const AdminAuthors = () => {
       <div className="flex flex-col gap-2">
         {authors.map(a => (
           <div key={a.id} className="flex items-center justify-between border border-slate-200 rounded-lg px-4 py-2">
-            <span className="text-sm font-medium text-slate-700">{a.name}</span>
+            <span className="text-sm font-medium text-slate-700">{fullName(a)}</span>
             <button onClick={() => handleDelete(a.id)} className="text-xs text-red-500 hover:text-red-700">Delete</button>
           </div>
         ))}

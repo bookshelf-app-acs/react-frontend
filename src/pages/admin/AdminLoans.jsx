@@ -33,8 +33,8 @@ export const AdminLoans = () => {
             <tbody>
               {loans.map(l => (
                 <tr key={l.id} className="border-b last:border-0 hover:bg-slate-50">
-                  <td className="px-3 py-2 font-medium">{l.bookTitle}</td>
-                  <td className="px-3 py-2 text-slate-500">{l.userEmail}</td>
+                  <td className="px-3 py-2 font-medium">{l.book?.title || '—'}</td>
+                  <td className="px-3 py-2 text-slate-500">{l.user?.email || '—'}</td>
                   <td className="px-3 py-2 text-slate-400">{new Date(l.loanDate).toLocaleDateString()}</td>
                   <td className="px-3 py-2 text-slate-400">{new Date(l.dueDate).toLocaleDateString()}</td>
                   <td className="px-3 py-2">

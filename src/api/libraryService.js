@@ -50,4 +50,4 @@ export const reserveBook = (bookId) =>
   libraryApi.post('/api/v1/reservations', { bookId });
 
 export const cancelReservation = (id) =>
-  libraryApi.delete(`/api/v1/reservations/${id}`);
+  libraryApi.put(`/api/v1/reservations/${id}/cancel`);

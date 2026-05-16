@@ -58,8 +58,10 @@ export const MyReservationsPage = () => {
             {reservations.map(r => (
               <div key={r.id} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-slate-800">{r.bookTitle}</p>
-                  <p className="text-sm text-slate-500">{r.bookAuthor}</p>
+                  <p className="font-medium text-slate-800">{r.book?.title}</p>
+                  <p className="text-sm text-slate-500">
+                    {r.book?.authors?.map(a => `${a.firstName ?? ''} ${a.lastName ?? ''}`.trim()).join(', ')}
+                  </p>
                   <p className="text-xs text-slate-400 mt-1">
                     Reserved: {new Date(r.reservationDate).toLocaleDateString()}
                   </p>

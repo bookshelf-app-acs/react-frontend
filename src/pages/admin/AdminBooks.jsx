@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { getBooks, createBook, deleteBook, getAuthors } from '../../api/libraryService';
 
+const fullName = (a) => `${a.firstName ?? ''} ${a.lastName ?? ''}`.trim();
+
 export const AdminBooks = () => {
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [form, setForm] = useState({ title: '', authorId: '', genre: '', totalCopies: 1 });
+  const [form, setForm] = useState({ title: '', authorId: '', description: '', isbn: '', totalCopies: 1 });
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -19,9 +21,15 @@ export const AdminBooks = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await createBook({ ...form, totalCopies: Number(form.totalCopies) });
+      await createBook({
+        title: form.title,
+        description: form.description,
+        isbn: form.isbn,
+        totalCopies: Number(form.totalCopies),
+        authorIds: form.authorId ? [form.authorId] : [],
+      });
       setMessage('Book added!');
-      setForm({ title: '', authorId: '', genre: '', totalCopies: 1 });
+      setForm({ title: '', authorId: '', description: '', isbn: '', totalCopies: 1 });
       setShowForm(false);
       fetchAll();
     } catch (e) {
@@ -38,6 +46,11 @@ export const AdminBooks = () => {
       setMessage(e.response?.data?.error_message || 'Failed to delete book.');
     }
   };
+
+  const bookAuthors = (b) =>
+    (b.authors && b.authors.length)
+      ? b.authors.map(fullName).join(', ')
+      : '—';
 
   return (
     <div>
@@ -73,13 +86,19 @@ export const AdminBooks = () => {
             className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm flex-1 min-w-40"
           >
             <option value="">Select author</option>
-            {authors.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+            {authors.map(a => <option key={a.id} value={a.id}>{fullName(a)}</option>)}
           </select>
           <input
-            placeholder="Genre (optional)"
-            value={form.genre}
-            onChange={e => setForm({ ...form, genre: e.target.value })}
-            className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm w-36"
+            placeholder="ISBN (optional)"
+            value={form.isbn}
+            onChange={e => setForm({ ...form, isbn: e.target.value })}
+            className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm w-44"
+          />
+          <input
+            placeholder="Description (optional)"
+            value={form.description}
+            onChange={e => setForm({ ...form, description: e.target.value })}
+            className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm flex-1 min-w-40"
           />
           <input
             type="number" min="1"
@@ -100,7 +119,7 @@ export const AdminBooks = () => {
             <tr>
               <th className="px-3 py-2">Title</th>
               <th className="px-3 py-2">Author</th>
-              <th className="px-3 py-2">Genre</th>
+              <th className="px-3 py-2">ISBN</th>
               <th className="px-3 py-2 text-center">Available</th>
               <th className="px-3 py-2 text-center">Total</th>
               <th className="px-3 py-2"></th>
@@ -110,8 +129,8 @@ export const AdminBooks = () => {
             {books.map(b => (
               <tr key={b.id} className="border-b last:border-0 hover:bg-slate-50">
                 <td className="px-3 py-2 font-medium">{b.title}</td>
-                <td className="px-3 py-2 text-slate-500">{b.authorName}</td>
-                <td className="px-3 py-2 text-slate-400">{b.genre || '—'}</td>
+                <td className="px-3 py-2 text-slate-500">{bookAuthors(b)}</td>
+                <td className="px-3 py-2 text-slate-400">{b.isbn || '—'}</td>
                 <td className="px-3 py-2 text-center">{b.availableCopies}</td>
                 <td className="px-3 py-2 text-center">{b.totalCopies}</td>
                 <td className="px-3 py-2 text-right">
