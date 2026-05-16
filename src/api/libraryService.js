@@ -37,7 +37,7 @@ export const borrowBook = (bookId) =>
   libraryApi.post('/api/v1/loans', { bookId });
 
 export const returnBook = (loanId) =>
-  libraryApi.patch(`/api/v1/loans/${loanId}/return`);
+    libraryApi.put(`/api/v1/loans/${loanId}/return`);
 
 // Reservations
 export const getMyReservations = () =>

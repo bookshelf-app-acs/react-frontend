@@ -58,8 +58,10 @@ export const MyLoansPage = () => {
             {loans.map(loan => (
               <div key={loan.id} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-slate-800">{loan.bookTitle}</p>
-                  <p className="text-sm text-slate-500">{loan.bookAuthor}</p>
+                  <p className="font-medium text-slate-800">{loan.book?.title}</p>
+                  <p className="text-sm text-slate-500">
+                    {loan.book?.authors?.map(a => `${a.firstName} ${a.lastName}`).join(', ')}
+                  </p>
                   <p className="text-xs text-slate-400 mt-1">
                     Borrowed: {new Date(loan.loanDate).toLocaleDateString()} |
                     Due: {new Date(loan.dueDate).toLocaleDateString()}
